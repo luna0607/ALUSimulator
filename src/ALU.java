@@ -399,9 +399,21 @@ public class ALU {
 		int[] a=new int[4];
 		int[] b=new int[4];
 		for (int i = 0; i < 4; i++) {
-			a[4-i-1]=o1[i]-'0';
-			b[4-i-1]=o2[i]-'0';
+			a[i]=o1[i]-'0';
+			b[i]=o2[i]-'0';
 		}
+		int[] p=new int[4];
+		int[] g=new int[4];
+		int[] s=new int[4];
+		int[] c=new int[4];
+
+		for (int i = 0; i < 4; i++) {
+			p[i]=a[i]|b[i];
+			g[i]=a[i]&b[i];
+		}
+
+
+
 
 		return null;
 	}
@@ -458,15 +470,22 @@ public class ALU {
 	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相加结果
 	 */
 	public String adder (String operand1, String operand2, char c, int length) {
-		// TODO YOUR CODE HERE.
+		assert length%4==0;
+		assert length>operand1.length();
+		assert length>operand2.length();
+
+		int caNum=Math.max(operand1.length()/4,operand2.length()/4);
+
+
+		String[] parts=new String[caNum];
 		return null;
 	}
-	
+
 	/**
 	 * 整数加法，要求调用{@link #claAdder(String, String, char) claAdder}方法实现。<br/>
 	 * 例：integerAddition("0100", "0011", 8)
 	 * @param operand1 二进制补码表示的被加数
-	 * @param operand2 二进制补码表示的加数
+	 * @param operand2 二进制补码表示的加数2
 	 * @param length 存放操作数的寄存器的长度，为4的倍数。length不小于操作数的长度，当某个操作数的长度小于length时，需要在高位补符号位
 	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相加结果
 	 */
@@ -487,7 +506,7 @@ public class ALU {
 		// TODO YOUR CODE HERE.
 		return null;
 	}
-	
+
 	/**
 	 * 整数乘法，使用Booth算法实现，可调用{@link #integerAddition(String, String, char, int) integerAddition}等方法。<br/>
 	 * 例：integerMultiplication("0100", "0011", 8)
