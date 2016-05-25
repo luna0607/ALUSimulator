@@ -11,7 +11,7 @@ public class ALU {
 
 	public static void main(String[] args) {
 		ALU alu=new ALU();
-		System.out.println(alu.floatRepresentation("123.321",8,23));
+		System.out.println(alu.claAdder("1011","1010",'0'));
 	}
 
 	/**
@@ -399,23 +399,36 @@ public class ALU {
 		int[] a=new int[4];
 		int[] b=new int[4];
 		for (int i = 0; i < 4; i++) {
-			a[i]=o1[i]-'0';
-			b[i]=o2[i]-'0';
+			a[3-i]=o1[i]-'0';
+			b[3-i]=o2[i]-'0';
 		}
 		int[] p=new int[4];
 		int[] g=new int[4];
 		int[] s=new int[4];
-		int[] c=new int[4];
-
+		int[] carry=new int[5];
+		carry[0]=c-'0';
 		for (int i = 0; i < 4; i++) {
 			p[i]=a[i]|b[i];
 			g[i]=a[i]&b[i];
 		}
+		carry[1]=g[0]+(p[0]*c);
+		carry[2]=g[1]+(p[1]*g[0])+(p[1]*p[0]*c);
+		carry[3]=g[2]+(p[2]*g[1])+(p[2]*p[1]*g[0])+(p[0]*p[2]*p[1]*c);
+		carry[4]=g[3]+(p[3]*g[2])+(p[3]*p[2]*g[1])+(p[3]*p[2]*p[1]*g[0])+((p[3]*p[2]*p[1]*p[0]*c));
+		for (int i = 0; i < 4; i++) {
+			s[i]=fullAdder((char)a[i],(char)b[i],(char)carry[i]).charAt(1)-'0';
+		}
+		StringBuilder resStringBuilder=new StringBuilder();
+		resStringBuilder.append(String.valueOf(carry[4]));
+		for (int i = 0; i < 4; i++) {
+			resStringBuilder.append(String.valueOf(s[3-i]));
+		}
+		String  result=resStringBuilder.toString();
 
 
 
 
-		return null;
+		return result;
 	}
 	
 	/**
@@ -474,8 +487,17 @@ public class ALU {
 		assert length>operand1.length();
 		assert length>operand2.length();
 
-		int caNum=Math.max(operand1.length()/4,operand2.length()/4);
+		StringBuilder stringBuilderO1=new StringBuilder(operand1);
+		StringBuilder stringBuilderO2=new StringBuilder(operand2);
 
+
+		int caNum=Math.max(operand1.length()/4,operand2.length()/4);
+		while (stringBuilderO1.length()%4!=0){
+			stringBuilderO1.append(stringBuilderO1.charAt(0));
+		}
+		while (stringBuilderO2.length()%4!=0){
+			stringBuilderO2.append(stringBuilderO2.charAt(0));
+		}
 
 		String[] parts=new String[caNum];
 		return null;

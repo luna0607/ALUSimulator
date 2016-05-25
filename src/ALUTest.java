@@ -83,7 +83,7 @@ public class ALUTest  {
 
     @Test
     public void claAdder() throws Exception {
-
+        assertEquals("11001",alu.claAdder("1100","1101",'0'));
     }
 
     @Test
