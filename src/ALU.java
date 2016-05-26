@@ -11,7 +11,7 @@ public class ALU {
 
 	public static void main(String[] args) {
 		ALU alu=new ALU();
-		System.out.println(alu.claAdder("1011","1010",'0'));
+		System.out.println(alu.adder("10011","100010",'0',8));
 	}
 
 	/**
@@ -408,15 +408,17 @@ public class ALU {
 		int[] carry=new int[5];
 		carry[0]=c-'0';
 		for (int i = 0; i < 4; i++) {
-			p[i]=a[i]|b[i];
-			g[i]=a[i]&b[i];
+			p[i]=(int)xor((char)a[i],(char)b[i])-'0';
+			g[i]=a[i]*b[i];
 		}
-		carry[1]=g[0]+(p[0]*c);
-		carry[2]=g[1]+(p[1]*g[0])+(p[1]*p[0]*c);
-		carry[3]=g[2]+(p[2]*g[1])+(p[2]*p[1]*g[0])+(p[0]*p[2]*p[1]*c);
-		carry[4]=g[3]+(p[3]*g[2])+(p[3]*p[2]*g[1])+(p[3]*p[2]*p[1]*g[0])+((p[3]*p[2]*p[1]*p[0]*c));
+		carry[1]=g[0]+(p[0]*carry[0]);
+		carry[2]=g[1]+(p[1]*g[0])+(p[1]*p[0]*carry[0]);
+		carry[3]=g[2]+(p[2]*g[1])+(p[2]*p[1]*g[0])+(p[0]*p[2]*p[1]*carry[0]);
+		carry[4]=g[3]+(p[3]*g[2])+(p[3]*p[2]*g[1])+(p[3]*p[2]*p[1]*g[0])+((p[3]*p[2]*p[1]*p[0]*carry[0]));
 		for (int i = 0; i < 4; i++) {
-			s[i]=fullAdder((char)a[i],(char)b[i],(char)carry[i]).charAt(1)-'0';
+			char temp=xor((char)a[i],(char)b[i]);
+			s[i]=(int)xor((char)(carry[i]),(char)(temp-'0'))-'0';
+		//	s[i]=(int)xor(xor((char)a[i],(char)b[i]),(char)carry[i])-'0';
 		}
 		StringBuilder resStringBuilder=new StringBuilder();
 		resStringBuilder.append(String.valueOf(carry[4]));
@@ -484,23 +486,57 @@ public class ALU {
 	 */
 	public String adder (String operand1, String operand2, char c, int length) {
 		assert length%4==0;
-		assert length>operand1.length();
-		assert length>operand2.length();
+		assert length>=operand1.length();
+		assert length>=operand2.length();
 
 		StringBuilder stringBuilderO1=new StringBuilder(operand1);
 		StringBuilder stringBuilderO2=new StringBuilder(operand2);
 
 
-		int caNum=Math.max(operand1.length()/4,operand2.length()/4);
 		while (stringBuilderO1.length()%4!=0){
-			stringBuilderO1.append(stringBuilderO1.charAt(0));
+			stringBuilderO1.insert(0,stringBuilderO1.charAt(0));
 		}
 		while (stringBuilderO2.length()%4!=0){
-			stringBuilderO2.append(stringBuilderO2.charAt(0));
+			stringBuilderO2.insert(0,stringBuilderO2.charAt(0));
 		}
 
+		int caNum=Math.max(stringBuilderO1.length()/4,stringBuilderO2.length()/4);
+		String[] o1Strings=new String[caNum];
+		String[] o2Strings=new String[caNum];
+		for (int i = caNum-1; i >=0; i--) {
+			o1Strings[caNum-1-i]=stringBuilderO1.substring(4*i,4*i+4);
+			o2Strings[caNum-1-i]=stringBuilderO2.substring(4*i,4*i+4);
+
+		}
+		for (int i = 0; i < caNum; i++) {
+			System.out.println(o1Strings[i]);
+			System.out.println(o2Strings[i]);
+		}
 		String[] parts=new String[caNum];
-		return null;
+		char[] carry=new char[caNum+1];
+		carry[0]=c;
+		for (int i = 0; i < caNum; i++) {
+			parts[i]=claAdder(o1Strings[i],o2Strings[i],carry[i]).substring(1,5);
+			carry[i+1]=claAdder(o1Strings[i],o2Strings[i],carry[i]).charAt(0);
+		}
+
+		StringBuilder resStringBuilder=new StringBuilder();
+		for (int i = 0; i < caNum; i++) {
+			resStringBuilder.append(parts[caNum-1-i]);
+		}
+		char temp=xor(stringBuilderO1.charAt(0),stringBuilderO2.charAt(0));
+		if(temp=='0'){
+			if(stringBuilderO1.charAt(0)==resStringBuilder.charAt(0)){
+				carry[caNum]='0';
+			}
+			else {
+				carry[caNum]='1';
+			}
+		} else {
+			carry[caNum]='0';
+		}
+		resStringBuilder.insert(0,carry[caNum]);
+		return resStringBuilder.toString();
 	}
 
 	/**
@@ -512,8 +548,7 @@ public class ALU {
 	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相加结果
 	 */
 	public String integerAddition (String operand1, String operand2, int length) {
-		// TODO YOUR CODE HERE.
-		return null;
+		return adder(operand1,operand2,'0',length);
 	}
 	
 	/**

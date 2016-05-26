@@ -70,12 +70,14 @@ public class ALUTest  {
     @Test
     public void ariRightShift() throws Exception {
         assertEquals("11110000",alu.ariRightShift("11000000",2));
+        assertEquals("11110000",alu.ariRightShift("11000000",2));
 
     }
 
     @Test
     public void fullAdder() throws Exception {
         assertEquals("10",alu.fullAdder('0','1','1'));
+        assertEquals("10",alu.fullAdder('1','1','0'));
         assertEquals("11",alu.fullAdder('1','1','1'));
         assertEquals("01",alu.fullAdder('0','1','0'));
         assertEquals("00",alu.fullAdder('0','0','0'));
@@ -83,7 +85,11 @@ public class ALUTest  {
 
     @Test
     public void claAdder() throws Exception {
-        assertEquals("11001",alu.claAdder("1100","1101",'0'));
+        assertEquals("01110",alu.claAdder("0001","1101",'0'));
+        assertEquals("10110",alu.claAdder("1001","1101",'0'));
+        assertEquals("10010",alu.claAdder("1001","1001",'0'));
+        assertEquals("10011",alu.claAdder("1001","1001",'1'));
+        assertEquals("11111",alu.claAdder("1111","1111",'1'));
     }
 
     @Test
@@ -93,7 +99,9 @@ public class ALUTest  {
     }
     @Test
     public void adder() throws Exception{
-
+        assertEquals("011111111",alu.adder("00000000","111111",'0',8));
+        assertEquals("101111111",alu.adder("10000000","111111",'0',8));
+        assertEquals("000000000",alu.adder("0000000","11111111",'1',8));
     }
 
     @Test
