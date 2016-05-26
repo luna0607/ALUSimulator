@@ -115,12 +115,18 @@ public class ALUTest  {
     @Test
     public void integerSubtraction() throws Exception {
         assertEquals("01011",alu.integerSubtraction("0010","0111",4));
+        assertEquals("00011",alu.integerSubtraction("0101","0010",4));
+        assertEquals("01001",alu.integerSubtraction("1011","0010",4));
+        assertEquals("10110",alu.integerSubtraction("1010","0100",4));
+        assertEquals("00111",alu.integerSubtraction("0101","1110",4));
+        assertEquals("11110",alu.integerSubtraction("0111","1001",4));
 
     }
 
     @Test
     public void integerMultiplication() throws Exception {
-
+        assertEquals("000010101",alu.integerMultiplication("0111","0011",4));
+        assertEquals("011101011",alu.integerMultiplication("0111","1101",4));
     }
 
     @Test

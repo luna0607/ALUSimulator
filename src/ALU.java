@@ -2,7 +2,7 @@ import java.math.BigInteger;
 
 /**
  * 模拟ALU进行整数和浮点数的四则运算
- * @author [请将此处修改为“学号_姓名”]
+ * @author ["151250081_李思聪"]
  *
  */
 
@@ -201,19 +201,6 @@ public class ALU {
 		System.out.println("整数部分"+integralPart);
 		System.out.println("小数部分"+decimalPart);
 		exponent=exponentStringBuilder.toString();
-
-
-
-
-
-
-
-
-
-
-
-
-
 		result=sign+exponent+fragtion;
 		return result;
 	}
@@ -570,12 +557,61 @@ public class ALU {
 	 * @param operand1 二进制补码表示的被乘数
 	 * @param operand2 二进制补码表示的乘数
 	 * @param length 存放操作数的寄存器的长度，为4的倍数。length不小于操作数的长度，当某个操作数的长度小于length时，需要在高位补符号位
-	 * @return 长度为length+1的字符串表示的相乘结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相乘结果
+	 * @return 长度为length+1的字符	串表示的相乘结果，其中第1位指	示是否溢出（溢出为1，否则为0），后length位是相乘结果
 	 */
 	public String integerMultiplication (String operand1, String operand2, int length) {
-		// TODO YOUR CODE HERE.
+		assert length%4==0;
+		assert length>=operand1.length();
+		assert length>=operand2.length();
 
-		return null;
+		StringBuilder stringBuilderO1=new StringBuilder(operand1);
+		StringBuilder stringBuilderO2=new StringBuilder(operand2);
+
+		while (stringBuilderO1.length()%4!=0){
+			stringBuilderO1.insert(0,stringBuilderO1.charAt(0));
+		}
+		while (stringBuilderO2.length()%4!=0){
+			stringBuilderO2.insert(0,stringBuilderO2.charAt(0));
+		}
+		String fixOperand1=stringBuilderO1.toString();
+		String fixOperand2=stringBuilderO2.toString();
+		StringBuilder resStringBuilder=new StringBuilder();
+		resStringBuilder.append(fixOperand2);
+		resStringBuilder.append('0');
+
+		for (int i = 0; i < length; i++) {
+			resStringBuilder.insert(0,'0');
+		}
+		String  a=resStringBuilder.substring(0,length);
+		String  q=fixOperand2;
+		String result=resStringBuilder.toString();
+		int temp=0;
+		for (int i = 0; i < length; i++) {
+			ariRightShift(result,1);
+			a=result.substring(0,length);
+			q=result.substring(length);
+			temp=result.charAt(result.length())-result.charAt(result.length()-1);
+
+
+
+			if(temp==-1){
+				a=integerSubtraction(a,fixOperand1,length).substring(1);
+			} else if(temp==1){
+				a=integerAddition(a,fixOperand1,length).substring(1);
+			}
+			result=a+q;
+			resStringBuilder.replace(0,resStringBuilder.length(),result);
+		}
+		String overflow;
+		if(xor(operand1.charAt(0),operand2.charAt(0))==result.charAt(0)){
+			overflow="0";
+		} else {
+			overflow="1";
+		}
+
+
+		result=overflow+result;
+		return result;
 	}
 	
 	/**
@@ -587,8 +623,32 @@ public class ALU {
 	 * @return 长度为2*length+1的字符串表示的相除结果，其中第1位指示是否溢出（溢出为1，否则为0），其后length位为商，最后length位为余数
 	 */
 	public String integerDivision (String operand1, String operand2, int length) {
-		// TODO YOUR CODE HERE.
+
+		assert length%4==0;
+		assert length>=operand1.length();
+		assert length>=operand2.length();
+
+		StringBuilder stringBuilderO1=new StringBuilder(operand1);
+		StringBuilder stringBuilderO2=new StringBuilder(operand2);
+
+		while (stringBuilderO1.length()%4!=0){
+			stringBuilderO1.insert(0,stringBuilderO1.charAt(0));
+		}
+		while (stringBuilderO2.length()%4!=0){
+			stringBuilderO2.insert(0,stringBuilderO2.charAt(0));
+		}
+		String fixOperand1=stringBuilderO1.toString();
+		String fixOperand2=stringBuilderO2.toString();
+		StringBuilder resStringBuilder=new StringBuilder();
+		resStringBuilder.append(fixOperand1);
+		for (int i = 0; i < length; i++) {
+			resStringBuilder.append(resStringBuilder.charAt(0));
+		}
+
+
 		return null;
+
+
 	}
 	
 	/**
@@ -601,7 +661,11 @@ public class ALU {
 	 * @return 长度为length+2的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），第2位为符号位，后length位是相加结果
 	 */
 	public String signedAddition (String operand1, String operand2, int length) {
-		// TODO YOUR CODE HERE.
+		assert length%4==0;
+
+
+
+
 		return null;
 	}
 	
