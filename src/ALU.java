@@ -560,8 +560,8 @@ public class ALU {
 	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相减结果
 	 */
 	public String integerSubtraction (String operand1, String operand2, int length) {
-		// TODO YOUR CODE HERE.
-		return null;
+
+		return integerAddition(operand1,toOpposite(operand2),length);
 	}
 
 	/**
@@ -688,7 +688,7 @@ public class ALU {
 
 		}
 	}
-
+	/*按位取反*/
 	public static String invert(String  s){
 		StringBuilder stringBuilder=new StringBuilder();
 		for (int i = 0; i < s.length(); i++) {
@@ -705,6 +705,8 @@ public class ALU {
 		return result;
 	}
 
+
+	/*取反加一*/
 	public static String toOpposite(String  s){
 		String temp=invert(s);
 		StringBuilder stringBuilder=new StringBuilder();

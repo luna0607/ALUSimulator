@@ -106,11 +106,15 @@ public class ALUTest  {
 
     @Test
     public void integerAddition() throws Exception {
-
+        assertEquals("01110",alu.integerAddition("1001","0101",4));
+        assertEquals("00000",alu.integerAddition("1100","0100",4));
+        assertEquals("10011",alu.integerAddition("1010","1001",4));
+        assertEquals("11001",alu.integerAddition("0101","0100",4));
     }
 
     @Test
     public void integerSubtraction() throws Exception {
+        assertEquals("01011",alu.integerSubtraction("0010","0111",4));
 
     }
 
