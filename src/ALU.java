@@ -583,23 +583,25 @@ public class ALU {
 			resStringBuilder.insert(0,'0');
 		}
 		String  a=resStringBuilder.substring(0,length);
-		String  q=fixOperand2;
+		String  q=fixOperand2+"0";
 		String result=resStringBuilder.toString();
 		int temp=0;
 		for (int i = 0; i < length; i++) {
-			ariRightShift(result,1);
-			a=result.substring(0,length);
-			q=result.substring(length);
-			temp=result.charAt(result.length())-result.charAt(result.length()-1);
-
-
-
+			temp=result.charAt(2*length)-result.charAt(2*length-1);
 			if(temp==-1){
 				a=integerSubtraction(a,fixOperand1,length).substring(1);
 			} else if(temp==1){
 				a=integerAddition(a,fixOperand1,length).substring(1);
 			}
 			result=a+q;
+
+			result=ariRightShift(result,1);
+			a=result.substring(0,length);
+			q=result.substring(length);
+
+
+
+
 			resStringBuilder.replace(0,resStringBuilder.length(),result);
 		}
 		String overflow;
@@ -610,7 +612,7 @@ public class ALU {
 		}
 
 
-		result=overflow+result;
+		result=overflow+result.substring(0,result.length()-1);
 		return result;
 	}
 	
@@ -628,7 +630,10 @@ public class ALU {
 		assert length>=operand1.length();
 		assert length>=operand2.length();
 
+		/*被除数*/
 		StringBuilder stringBuilderO1=new StringBuilder(operand1);
+
+		/*除数*/
 		StringBuilder stringBuilderO2=new StringBuilder(operand2);
 
 		while (stringBuilderO1.length()%4!=0){
@@ -638,15 +643,51 @@ public class ALU {
 			stringBuilderO2.insert(0,stringBuilderO2.charAt(0));
 		}
 		String fixOperand1=stringBuilderO1.toString();
-		String fixOperand2=stringBuilderO2.toString();
+		String divisor=stringBuilderO2.toString();
 		StringBuilder resStringBuilder=new StringBuilder();
+
 		resStringBuilder.append(fixOperand1);
 		for (int i = 0; i < length; i++) {
 			resStringBuilder.append(resStringBuilder.charAt(0));
 		}
+		String  remainer= resStringBuilder.substring(0,length);
+		String  quotient=resStringBuilder.substring(length);
+		String  result=remainer+quotient;
 
 
-		return null;
+
+		for (int i = 0; i < length; i++) {
+			if (divisor.charAt(0) == remainer.charAt(0)) {
+				remainer=integerSubtraction(remainer,divisor,length);
+			} else {
+				remainer=integerAddition(remainer,divisor,length);
+			}
+			result=remainer+quotient;
+
+			leftShift(result,1);
+			 remainer= result.substring(0,length);
+			 quotient=result.substring(length);
+			if (divisor.charAt(0) == remainer.charAt(0)) {
+				addOne(quotient);
+			}
+			result=remainer+quotient;
+
+		}
+		String tempRemainer;
+		if(remainer.charAt(0)==divisor.charAt(0)) {
+			 tempRemainer = integerSubtraction(remainer, divisor, length).substring(1);
+		} else {
+			 tempRemainer=integerAddition(remainer,divisor,length).substring(1);
+		}
+		if(tempRemainer.charAt(0)==remainer.charAt(0)){
+			result=quotient+tempRemainer;
+		} else {
+			result=quotient+remainer;
+		}
+		result="0"+result;
+
+
+		return result;
 
 
 	}
