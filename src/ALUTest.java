@@ -133,8 +133,10 @@ public class ALUTest  {
 
     @Test
     public void integerDivision() throws Exception {
+        assertEquals("000110000",alu.integerDivision("0110","0010",4));
+        assertEquals("011101111",alu.integerDivision("1001","0011",4));
+
         assertEquals("000100000",alu.integerDivision("0010","0001",4));
-        assertEquals("000110001",alu.integerDivision("0111","0010",4));
         //assertEquals("0",alu.integerDivision("1100","0010",4));
 
     }

@@ -11,7 +11,6 @@ public class ALU {
 
 	public static void main(String[] args) {
 		ALU alu=new ALU();
-		System.out.println(alu.adder("10011","100010",'0',8));
 	}
 
 	/**
@@ -198,8 +197,6 @@ public class ALU {
 				}
 			}
 		}
-		System.out.println("整数部分"+integralPart);
-		System.out.println("小数部分"+decimalPart);
 		exponent=exponentStringBuilder.toString();
 		result=sign+exponent+fragtion;
 		return result;
@@ -495,10 +492,7 @@ public class ALU {
 			o2Strings[caNum-1-i]=stringBuilderO2.substring(4*i,4*i+4);
 
 		}
-		for (int i = 0; i < caNum; i++) {
-			System.out.println(o1Strings[i]);
-			System.out.println(o2Strings[i]);
-		}
+
 		String[] parts=new String[caNum];
 		char[] carry=new char[caNum+1];
 		carry[0]=c;
@@ -625,6 +619,7 @@ public class ALU {
 	 * @return 长度为2*length+1的字符串表示的相除结果，其中第1位指示是否溢出（溢出为1，否则为0），其后length位为商，最后length位为余数
 	 */
 	public String integerDivision (String operand1, String operand2, int length) {
+		System.out.println("-----------------------------我是分割线---------------------------------------");
 
 		assert length%4==0;
 		assert length>=operand1.length();
@@ -647,45 +642,59 @@ public class ALU {
 		StringBuilder resStringBuilder=new StringBuilder();
 
 		resStringBuilder.append(fixOperand1);
-		for (int i = 0; i < length; i++) {
-			resStringBuilder.append(resStringBuilder.charAt(0));
+		for (int i = 0; i <= length; i++) {
+			resStringBuilder.insert(0,resStringBuilder.charAt(0));
 		}
 		String  remainer= resStringBuilder.substring(0,length);
-		String  quotient=resStringBuilder.substring(length);
-		String  result=remainer+quotient;
+		String  quotient=resStringBuilder.substring(length,2*length);
+		if (divisor.charAt(0) == remainer.charAt(0)) {
+			addOne(quotient);
+		}
+		quotient=fixOperand1;
+		String  result=remainer+fixOperand1;
 
 
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i <length+1; i++) {
 			if (divisor.charAt(0) == remainer.charAt(0)) {
-				remainer=integerSubtraction(remainer,divisor,length);
+				remainer=integerSubtraction(remainer,divisor,length).substring(1);
+				System.out.println("减去被除数"+divisor);
 			} else {
-				remainer=integerAddition(remainer,divisor,length);
+				remainer=integerAddition(remainer,divisor,length).substring(1);
+				System.out.println("加上被除数"+divisor);
 			}
 			result=remainer+quotient;
+			System.out.println(result);
 
-			leftShift(result,1);
-			 remainer= result.substring(0,length);
-			 quotient=result.substring(length);
+			result=leftShift(result,1);
+			remainer= result.substring(0,length);
+			quotient=result.substring(length);
 			if (divisor.charAt(0) == remainer.charAt(0)) {
-				addOne(quotient);
+				quotient=addOne(quotient);
+				System.out.println("左移补１");
+			}else {
+
+				System.out.println("左移补0");
 			}
 			result=remainer+quotient;
+			System.out.println(result);
 
 		}
-		String tempRemainer;
+/*		String tempRemainer;
 		if(remainer.charAt(0)==divisor.charAt(0)) {
 			 tempRemainer = integerSubtraction(remainer, divisor, length).substring(1);
 		} else {
 			 tempRemainer=integerAddition(remainer,divisor,length).substring(1);
 		}
-		if(tempRemainer.charAt(0)==remainer.charAt(0)){
-			result=quotient+tempRemainer;
-		} else {
-			result=quotient+remainer;
-		}
-		result="0"+result;
+		if(divisor.charAt(0)==remainer.charAt(0)){
+			quotient=addOne(quotient);
 
+		}*/
+		result=quotient+remainer;
+
+		result="0"+result;
+		System.out.println("输出结果"+result);
+		System.out.println("-----------------------------我是分割线---------------------------------------");
 
 		return result;
 
