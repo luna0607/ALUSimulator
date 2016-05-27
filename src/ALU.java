@@ -709,9 +709,33 @@ public class ALU {
 	 * @return 长度为length+2的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），第2位为符号位，后length位是相加结果
 	 */
 	public String signedAddition (String operand1, String operand2, int length) {
-		assert length%4==0;
+		String[] binOf ={"0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"};
 
+		boolean o1Positive=true;
+		boolean o2Positive=true;
+		StringBuilder stringBuilder1=new StringBuilder();
+		StringBuilder stringBuilder2=new StringBuilder();
+		if(operand1.charAt(0)=='-'){
+			o1Positive=false;
+			stringBuilder1.append(operand1.substring(1));
+		} else {
+			stringBuilder1.append(operand1);
+		}
 
+		if(operand2.charAt(0)=='-') {
+			o2Positive = false;
+			stringBuilder2.append(operand2.substring(1));
+		} else {
+			stringBuilder2.append(operand2);
+		}
+
+		while (stringBuilder1.length()%4!=0){
+			stringBuilder1.insert(0,stringBuilder1.charAt(0));
+		}
+
+		while (stringBuilder2.length()%4!=0){
+			stringBuilder2.insert(0,stringBuilder2.charAt(0));
+		}
 
 
 		return null;
