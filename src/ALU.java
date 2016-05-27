@@ -655,7 +655,7 @@ public class ALU {
 
 
 
-		for (int i = 0; i <length+1; i++) {
+		for (int i = 0; i <length; i++) {
 			if (divisor.charAt(0) == remainer.charAt(0)) {
 				remainer=integerSubtraction(remainer,divisor,length).substring(1);
 				System.out.println("减去被除数"+divisor);
@@ -680,17 +680,15 @@ public class ALU {
 			System.out.println(result);
 
 		}
-/*		String tempRemainer;
+		String tempRemainer;
 		if(remainer.charAt(0)==divisor.charAt(0)) {
-			 tempRemainer = integerSubtraction(remainer, divisor, length).substring(1);
+			result=quotient+remainer;
 		} else {
 			 tempRemainer=integerAddition(remainer,divisor,length).substring(1);
+			result=quotient+tempRemainer;
 		}
-		if(divisor.charAt(0)==remainer.charAt(0)){
-			quotient=addOne(quotient);
 
-		}*/
-		result=quotient+remainer;
+
 
 		result="0"+result;
 		System.out.println("输出结果"+result);
