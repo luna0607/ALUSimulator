@@ -11,6 +11,7 @@ public class ALU {
 
 	public static void main(String[] args) {
 		ALU alu=new ALU();
+		System.out.println(alu.signedAddition("01000","000001",8));
 	}
 
 	/**
@@ -709,10 +710,14 @@ public class ALU {
 	 * @return 长度为length+2的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），第2位为符号位，后length位是相加结果
 	 */
 	public String signedAddition (String operand1, String operand2, int length) {
+		assert  length%4==0;
+		int caNum=length/4;
 		String[] binOf ={"0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"};
 
+		char sign;
 		boolean o1Positive=true;
 		boolean o2Positive=true;
+		boolean resultPositive=true;
 		StringBuilder stringBuilder1=new StringBuilder();
 		StringBuilder stringBuilder2=new StringBuilder();
 		if(operand1.charAt(0)=='-'){
@@ -729,13 +734,59 @@ public class ALU {
 			stringBuilder2.append(operand2);
 		}
 
-		while (stringBuilder1.length()%4!=0){
+		while (stringBuilder1.length()!=length){
 			stringBuilder1.insert(0,stringBuilder1.charAt(0));
 		}
 
-		while (stringBuilder2.length()%4!=0){
+		while (stringBuilder2.length()!=length){
 			stringBuilder2.insert(0,stringBuilder2.charAt(0));
 		}
+
+		String[] o1Strings=new String[caNum];
+		String[] o2Strings=new String[caNum];
+		String[] resultStrings=new String[caNum];
+		char carry='0';
+		for (int i = caNum-1; i >=0; i--) {
+			o1Strings[caNum-1-i]=stringBuilder1.substring(4*i,4*i+4);
+			o2Strings[caNum-1-i]=stringBuilder2.substring(4*i,4*i+4);
+		}
+
+
+		if(o1Positive==o2Positive){
+			if(o1Positive){
+				resultPositive=true;
+				sign='0';
+			} else {
+				resultPositive=false;
+				sign='1';
+			}
+			for (int i = 0; i < caNum; i++) {
+				resultStrings[i]=integerAddition(o1Strings[i],o2Strings[i],4).substring(1);
+				if(carry=='1'){
+					resultStrings[i]=addOne(resultStrings[i]);
+				}
+				carry=integerAddition(o1Strings[i],o2Strings[i],length).charAt(0);
+				if(carry=='1'){
+					resultStrings[i]=integerAddition(resultStrings[i],"0110",4).substring(1);
+
+				}
+			}
+
+			for (int i = 0; i < caNum; i++) {
+
+			}
+
+
+
+
+		}else {
+
+
+		}
+
+
+
+
 
 
 		return null;
