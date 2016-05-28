@@ -715,6 +715,7 @@ public class ALU {
 		String[] binOf ={"0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"};
 
 		char sign;
+		char overflow;
 		boolean o1Positive=true;
 		boolean o2Positive=true;
 		boolean resultPositive=true;
@@ -745,7 +746,9 @@ public class ALU {
 		String[] o1Strings=new String[caNum];
 		String[] o2Strings=new String[caNum];
 		String[] resultStrings=new String[caNum];
+		String  result;
 		char carry='0';
+		char carry2='0';
 		for (int i = caNum-1; i >=0; i--) {
 			o1Strings[caNum-1-i]=stringBuilder1.substring(4*i,4*i+4);
 			o2Strings[caNum-1-i]=stringBuilder2.substring(4*i,4*i+4);
@@ -764,6 +767,7 @@ public class ALU {
 				resultStrings[i]=integerAddition(o1Strings[i],o2Strings[i],4).substring(1);
 				if(carry=='1'){
 					resultStrings[i]=addOne(resultStrings[i]);
+					carry='0';
 				}
 				carry=integerAddition(o1Strings[i],o2Strings[i],length).charAt(0);
 				if(carry=='1'){
@@ -771,10 +775,22 @@ public class ALU {
 
 				}
 			}
-
+			carry2='0';
 			for (int i = 0; i < caNum; i++) {
 
+				if(carry2=='1'){
+					resultStrings[i]=addOne(resultStrings[i]);
+					carry2='0';
+				}
+				for (int j = 10; j <16 ; j++) {
+					if(binOf[j].equals(resultStrings[i])){
+						resultStrings[i]=integerAddition(resultStrings[i],"0110",4).substring(1);
+						carry2='1';
+					}
+				}
 			}
+
+
 
 
 
