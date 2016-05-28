@@ -101,17 +101,38 @@ public class ALU {
 		} else {
 			num1=Double.parseDouble(number);
 		}
+		StringBuilder exponentBuiler=new StringBuilder();
+		StringBuilder fragtionBuiler=new StringBuilder();
 
 		if(num1>maxValue){
-			if (positive){
-				return "+Inf";
+			for (int i = 0; i < eLength; i++) {
+				exponentBuiler.append('1');
+			}
+			for (int i = 0; i < sLength; i++) {
+				exponentBuiler.append('0');
+			}
+			result=exponentBuiler.toString()+fragtionBuiler.toString();
+				if (positive){
+
+				return "0"+result;
 			} else {
-				return  "-Inf";
+				return  "1"+result;
 			}
 		}
 
 		if(num1<minValue){
-			return "0";
+			for (int i = 0; i < eLength; i++) {
+				exponentBuiler.append('0');
+			}
+			for (int i = 0; i < sLength; i++) {
+				exponentBuiler.append('0');
+			}
+			result=exponentBuiler.toString()+fragtionBuiler.toString();
+			if (positive) {
+				return "0"+result;
+			} else {
+				return  "1"+result;
+			}
 		}
 
 		if(num1<minRegValue){
@@ -258,6 +279,40 @@ public class ALU {
 		boolean positive=true;
 		if(sign.equals("1")){
 			positive=false;
+		}
+
+		boolean exponentAllZero=true;
+		boolean exponentAllOne=true;
+		boolean fragtionAllOne=true;
+		boolean fragtionAllZero=true;
+		for (int i = 0; i < exponent.length(); i++) {
+			if(exponent.charAt(i)=='0'){
+				exponentAllOne=false;
+			}
+			if(exponent.charAt(i)=='1'){
+				exponentAllZero=false;
+			}
+		}
+		for (int i = 0; i < fragtion.length(); i++) {
+			if(fragtion.charAt(i)=='0'){
+				fragtionAllOne=false;
+			}
+			if (fragtion.charAt(i)=='1'){
+				fragtionAllZero=false;
+			}
+		}
+		if (exponentAllZero&&fragtionAllZero){
+			return "0";
+		}
+		if(exponentAllOne&&fragtionAllZero){
+			if(positive){
+				return "+Inf";
+			} else {
+				return "-Inf";
+			}
+		}
+		if(exponentAllOne&&(!fragtionAllZero)){
+				return "NaN";
 		}
 
 
@@ -689,7 +744,6 @@ public class ALU {
 				quotient = addOne(quotient);
 			} else {
 				remainer= integerAddition(remainer,divisor,length).substring(1);
-			//	quotient=integerSubtraction(remainer,"01",length).substring(1);
 			}
 		}
 		result=quotient+remainer;
@@ -929,6 +983,13 @@ public class ALU {
 		// TODO YOUR CODE HERE.
 		return null;
 	}
+
+
+
+
+
+
+
 	public static String hex2Bin(String in) {
 		if (in.equals("0"))
 			return "0";
