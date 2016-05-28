@@ -42,6 +42,8 @@ public class ALUTest  {
 
     @Test
     public void floatTrueValue() throws Exception {
+//        assertEquals("123.14321",alu.floatTrueValue("01000010111101100100100101010011",8,23));
+   //     assertEquals("0.000012342134513215",alu.floatTrueValue("00110111010011110001000100010000",8,23));
 
     }
 

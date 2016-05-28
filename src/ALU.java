@@ -1,4 +1,6 @@
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 /**
  * 模拟ALU进行整数和浮点数的四则运算
@@ -314,11 +316,24 @@ public class ALU {
 		if(exponentAllOne&&(!fragtionAllZero)){
 				return "NaN";
 		}
+		String  tempTrueValue=integerTrueValue("01"+fragtion);
+		String  exponentTrueValue=integerTrueValue("0"+exponent);
+		BigInteger exponentValue=new BigInteger(exponentTrueValue);
+		exponentValue=exponentValue.subtract(new BigInteger(String.valueOf((int)Math.pow(2,(eLength-1))+sLength)));
+		BigDecimal  bd=new BigDecimal(tempTrueValue);
+		bd=bd.multiply(new BigDecimal(Math.pow(2,Double.parseDouble(exponentValue.toString()))));
+		if(exponentAllZero);{
+			bd=bd.multiply(new BigDecimal(2));
+		}
 
 
 
 
-		return null;
+
+
+
+
+		return bd.toString();
 	}
 	
 	/**
