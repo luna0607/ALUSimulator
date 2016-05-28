@@ -134,8 +134,11 @@ public class ALUTest  {
     @Test
     public void integerDivision() throws Exception {
         assertEquals("011101111",alu.integerDivision("1001","0011",4));
-        assertEquals("000100000",alu.integerDivision("0010","0001",4));
         assertEquals("000110000",alu.integerDivision("0110","0010",4));
+        assertEquals("000100000",alu.integerDivision("0010","0001",4));
+        assertEquals("001100000",alu.integerDivision("0110","0001",4));
+        assertEquals("000100000",alu.integerDivision("0110","0011",4));
+        assertEquals("000100001",alu.integerDivision("0111","0011",4));
 
         //assertEquals("0",alu.integerDivision("1100","0010",4));
 
@@ -144,6 +147,7 @@ public class ALUTest  {
     @Test
     public void signedAddition() throws Exception {
         assertEquals("0001010110",alu.signedAddition("00100101","00110001",8));
+        assertEquals("0101010110",alu.signedAddition("-00100101","-00110001",8));
         assertEquals("00000110000100",alu.signedAddition("001100001001","-000100100101",12));
     }
 
