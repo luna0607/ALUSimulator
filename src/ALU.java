@@ -743,10 +743,12 @@ public class ALU {
 			stringBuilder2.insert(0,stringBuilder2.charAt(0));
 		}
 
+
 		String[] o1Strings=new String[caNum];
 		String[] o2Strings=new String[caNum];
 		String[] resultStrings=new String[caNum];
 		String  result;
+		StringBuilder stringBuilderRes=new StringBuilder();
 		char carry='0';
 		char carry2='0';
 		for (int i = caNum-1; i >=0; i--) {
@@ -762,6 +764,56 @@ public class ALU {
 			} else {
 				resultPositive=false;
 				sign='1';
+			}
+			for (int i = 0; i < caNum; i++) {
+							resultStrings[i]=integerAddition(o1Strings[i],o2Strings[i],4).substring(1);
+							if(carry=='1'){
+								resultStrings[i]=addOne(resultStrings[i]);
+								carry='0';
+							}
+							carry=integerAddition(o1Strings[i],o2Strings[i],length).charAt(0);
+							if(carry=='1'){
+								resultStrings[i]=integerAddition(resultStrings[i],"0110",4).substring(1);
+
+							}
+						}
+						carry2='0';
+						for (int i = 0; i < caNum; i++) {
+
+							if(carry2=='1'){
+								resultStrings[i]=addOne(resultStrings[i]);
+								carry2='0';
+							}
+							for (int j = 10; j <16 ; j++) {
+								if(binOf[j].equals(resultStrings[i])){
+									resultStrings[i]=integerAddition(resultStrings[i],"0110",4).substring(1);
+									carry2='1';
+					}
+				}
+			}
+			if(carry=='1'||carry2=='1'){
+				overflow='1';
+			} else {
+				overflow='0';
+			}
+
+
+
+
+
+
+		}else {
+			overflow='0';
+			if(!o1Positive){
+				for (int i = 0; i < caNum; i++) {
+					o1Strings[i]=integerSubtraction("1001",o1Strings[i],4).substring(1);
+				}
+				o1Strings[0]=addOne(o1Strings[0]);
+			} else if(!o2Positive){
+				for (int i = 0; i <caNum ; i++) {
+					o2Strings[i]=integerSubtraction("1001",o2Strings[i],4).substring(1);
+				}
+				o2Strings[0]=addOne(o2Strings[0]);
 			}
 			for (int i = 0; i < caNum; i++) {
 				resultStrings[i]=integerAddition(o1Strings[i],o2Strings[i],4).substring(1);
@@ -789,23 +841,29 @@ public class ALU {
 					}
 				}
 			}
-
-
-
-
-
-
-		}else {
+			if(carry=='1'||carry2=='1'){
+				sign='0';
+			} else {
+				for (int i = 0; i < caNum; i++) {
+					resultStrings[i]=integerSubtraction("1001",resultStrings[i],4);
+				}
+				sign='1';
+			}
 
 
 		}
+		stringBuilderRes.append(overflow);
+		stringBuilderRes.append(sign);
+		for (int i = caNum-1; i >=0 ; i--) {
+			stringBuilderRes.append(resultStrings[i]);
+		}
+		result=stringBuilderRes.toString();
 
 
 
 
 
-
-		return null;
+		return result;
 	}
 	
 	/**
@@ -819,7 +877,10 @@ public class ALU {
 	 * @return 长度为2+eLength+sLength的字符串表示的相加结果，其中第1位指示是否指数上溢（溢出为1，否则为0），其余位从左到右依次为符号、指数（移码表示）、尾数（首位隐藏）。舍入策略为向0舍入
 	 */
 	public String floatAddition (String operand1, String operand2, int eLength, int sLength, int gLength) {
-		// TODO YOUR CODE HERE.
+
+
+
+
 		return null;
 	}
 	

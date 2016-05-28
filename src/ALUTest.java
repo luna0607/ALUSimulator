@@ -143,7 +143,8 @@ public class ALUTest  {
 
     @Test
     public void signedAddition() throws Exception {
-
+        assertEquals("0001010110",alu.signedAddition("00100101","00110001",8));
+        assertEquals("00000110000100",alu.signedAddition("001100001001","-000100100101",12));
     }
 
     @Test
