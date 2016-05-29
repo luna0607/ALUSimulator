@@ -949,8 +949,92 @@ public class ALU {
 	 * @return 长度为2+eLength+sLength的字符串表示的相加结果，其中第1位指示是否指数上溢（溢出为1，否则为0），其余位从左到右依次为符号、指数（移码表示）、尾数（首位隐藏）。舍入策略为向0舍入
 	 */
 	public String floatAddition (String operand1, String operand2, int eLength, int sLength, int gLength) {
+		double maxValue=(2-Math.pow(2,-sLength))*Math.pow(2,Math.pow(2,eLength-1)-1);
+		double minRegValue=Math.pow(2,(-Math.pow(2,eLength-1)+2));
+		double minValue=minRegValue*Math.pow(2,-sLength);
+		StringBuilder exponentStringBuilder=new StringBuilder();
+		StringBuilder fragtionStringBuilder=new StringBuilder();
+
+		/*构造0*/
+		for (int i = 0; i < eLength; i++) {
+			exponentStringBuilder.append("0");
+		}
+		for (int i = 0; i < sLength; i++) {
+			fragtionStringBuilder.append("0");
+		}
+		String postiveZero="0"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		String negativeZero="1"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		exponentStringBuilder.delete(0,exponentStringBuilder.length());
+		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
 
 
+		/*构造无穷大*/
+		for (int i = 0; i < eLength; i++) {
+			exponentStringBuilder.append("0");
+		}
+		for (int i = 0; i < sLength; i++) {
+			fragtionStringBuilder.append("0");
+		}
+		String positiveInfinite="0"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		String negativeInfinite="1"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+
+		exponentStringBuilder.delete(0,exponentStringBuilder.length());
+		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
+
+		char overflow;
+		char sign;
+		String exponent1;
+		String exponent2;
+		int exponentValue1;
+		int exponentValue2;
+		String fragtion1;
+		String fragtion2;
+		String protect1;
+		String protect2;
+		String result1;
+		String result2;
+		boolean o1Positive;
+		boolean o2Positive;
+		if(operand1.charAt(0)=='0'){
+			o1Positive=true;
+		} else {
+			o1Positive=false;
+		}
+
+		if(operand2.charAt(0)=='0'){
+			o2Positive=true;
+		} else {
+			o2Positive=false;
+		}
+		exponent1=operand1.substring(1,1+eLength);
+		exponent2=operand2.substring(1,1+eLength);
+		fragtion1=operand1.substring(1+eLength,1+eLength+sLength);
+		fragtion2=operand2.substring(1+eLength,1+eLength+sLength);
+		exponentValue1=Integer.valueOf(integerTrueValue("0"+exponent1));
+		exponentValue2=Integer.valueOf(integerTrueValue("0"+exponent2));
+		if(operand1.equals(postiveZero)||operand1.equals(negativeZero)){
+			return "0"+operand2;
+		} else if(operand2.equals(postiveZero)||operand2.equals(negativeZero)){
+			return  "0"+operand1;
+		} else{
+			if(!exponent1.equals(exponent2)){
+				if(exponentValue1>exponentValue2){
+
+
+				} else {
+
+
+				}
+
+			}
+
+
+
+
+
+
+
+		}
 
 
 		return null;
