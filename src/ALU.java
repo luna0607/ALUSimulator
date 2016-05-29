@@ -793,18 +793,18 @@ public class ALU {
 		boolean resultPositive=true;
 		StringBuilder stringBuilder1=new StringBuilder();
 		StringBuilder stringBuilder2=new StringBuilder();
-		if(operand1.charAt(0)=='-'){
+		if(operand1.charAt(0)=='1'){
 			o1Positive=false;
 			stringBuilder1.append(operand1.substring(1));
 		} else {
-			stringBuilder1.append(operand1);
+			stringBuilder1.append(operand1.substring(1));
 		}
 
-		if(operand2.charAt(0)=='-') {
+		if(operand2.charAt(0)=='1') {
 			o2Positive = false;
 			stringBuilder2.append(operand2.substring(1));
 		} else {
-			stringBuilder2.append(operand2);
+			stringBuilder2.append(operand2.substring(1));
 		}
 
 		while (stringBuilder1.length()!=length){
@@ -970,7 +970,7 @@ public class ALU {
 
 		/*构造无穷大*/
 		for (int i = 0; i < eLength; i++) {
-			exponentStringBuilder.append("0");
+			exponentStringBuilder.append("1");
 		}
 		for (int i = 0; i < sLength; i++) {
 			fragtionStringBuilder.append("0");
@@ -981,16 +981,26 @@ public class ALU {
 		exponentStringBuilder.delete(0,exponentStringBuilder.length());
 		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
 
-		char overflow;
 		char sign;
 		String exponent1;
 		String exponent2;
+		String sign1;
+		String sign2;
 		int exponentValue1;
 		int exponentValue2;
 		String fragtion1;
 		String fragtion2;
 		String protect1;
 		String protect2;
+		StringBuilder protect1StringBuilder=new StringBuilder();
+		StringBuilder protect2StringBuilder=new StringBuilder();
+		String resultFragtion;
+		char overFlow;
+		for (int i = 0; i < gLength; i++) {
+			protect1StringBuilder.append("0");
+			protect2StringBuilder.append("0");
+		}
+		int exponentMaxValue=(int)Math.pow(2,(int)eLength)-1;
 		String result1;
 		String result2;
 		boolean o1Positive;
@@ -1012,6 +1022,8 @@ public class ALU {
 		fragtion2=operand2.substring(1+eLength,1+eLength+sLength);
 		exponentValue1=Integer.valueOf(integerTrueValue("0"+exponent1));
 		exponentValue2=Integer.valueOf(integerTrueValue("0"+exponent2));
+		sign1=operand1.substring(0,1);
+		sign2=operand2.substring(0,1);
 		if(operand1.equals(postiveZero)||operand1.equals(negativeZero)){
 			return "0"+operand2;
 		} else if(operand2.equals(postiveZero)||operand2.equals(negativeZero)){
@@ -1019,13 +1031,57 @@ public class ALU {
 		} else{
 			if(!exponent1.equals(exponent2)){
 				if(exponentValue1>exponentValue2){
-
-
+					while (exponentValue1!=exponentValue2){
+						exponentValue2++;
+						fragtion2=ariRightShift(fragtion2,1);
+						if (fragtion2.equals(postiveZero.substring(1+eLength,1+eLength+sLength))){
+							return "0"+operand1;
+						}
+					}
 				} else {
-
-
+					while (exponentValue1!=exponentValue2){
+						exponentValue1++;
+						fragtion1=ariRightShift(fragtion1,1);
+						if (fragtion1.equals(postiveZero.substring(1+eLength,1+eLength+sLength))){
+							return "0"+operand2;
+						}
+					}
 				}
 
+			}
+			int length;
+			if(sLength%4==0){
+				length=sLength;
+
+			}else {
+				length=(sLength/4+1)*4;
+			}
+			resultFragtion=signedAddition(sign1+fragtion1,sign2+fragtion2,length).substring(2);
+			sign=signedAddition(sign1+fragtion1,sign2+fragtion2,length).charAt(1);
+			overFlow=signedAddition(sign1+fragtion1,sign2+fragtion2,length).charAt(0);
+			if (overFlow == '1') {
+
+				resultFragtion="1"+ariRightShift(resultFragtion,1).substring(1);
+				exponentValue1++;
+				if(exponentValue1>=exponentMaxValue){
+					if (sign == '1') {
+						return negativeInfinite;
+					} else {
+						return positiveInfinite;
+					}
+				}
+
+			}
+
+			while (resultFragtion.charAt(0) == '0') {
+				resultFragtion=leftShift(resultFragtion,1);
+				exponentValue1--;
+				if (exponentValue1 < 0) {
+
+				}
+				if(exponentValue1==0){
+					resultFragtion=ariRightShift(resultFragtion,1);
+				}
 			}
 
 
@@ -1034,10 +1090,14 @@ public class ALU {
 
 
 
+
+
 		}
+		String resultExponent=integerReprsentation(String.valueOf("0"+exponentValue1),eLength);
+		String result=String.valueOf(sign)+resultExponent+resultFragtion;
 
 
-		return null;
+		return result;
 	}
 	
 	/**
@@ -1051,8 +1111,14 @@ public class ALU {
 	 * @return 长度为2+eLength+sLength的字符串表示的相减结果，其中第1位指示是否指数上溢（溢出为1，否则为0），其余位从左到右依次为符号、指数（移码表示）、尾数（首位隐藏）。舍入策略为向0舍入
 	 */
 	public String floatSubtraction (String operand1, String operand2, int eLength, int sLength, int gLength) {
-		// TODO YOUR CODE HERE.
-		return null;
+		char sign;
+		if (operand2.charAt(0) == '0') {
+			sign='1';
+		}else {
+			sign='0';
+		}
+		String  realOperand2=String.valueOf(sign)+operand2.substring(1);
+		return floatAddition(operand1,realOperand2,eLength,sLength,gLength);
 	}
 	
 	/**

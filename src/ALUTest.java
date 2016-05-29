@@ -145,13 +145,14 @@ public class ALUTest  {
 
     @Test
     public void signedAddition() throws Exception {
-        assertEquals("0001010110",alu.signedAddition("00100101","00110001",8));
-        assertEquals("0101010110",alu.signedAddition("-00100101","-00110001",8));
-        assertEquals("00000110000100",alu.signedAddition("001100001001","-000100100101",12));
+        assertEquals("0001010110",alu.signedAddition("000100101","000110001",8));
+        assertEquals("0101010110",alu.signedAddition("100100101","100110001",8));
+        assertEquals("00000110000100",alu.signedAddition("0001100001001","1000100100101",12));
     }
 
     @Test
     public void floatAddition() throws Exception {
+        assertEquals("00111111100000000000000000001000",alu.floatAddition("00111111100000000000000000000111","00111111100000000000000000000001",8,23,4));
 
     }
 
