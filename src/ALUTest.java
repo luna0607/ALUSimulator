@@ -145,14 +145,23 @@ public class ALUTest  {
 
     @Test
     public void signedAddition() throws Exception {
-        assertEquals("0001010110",alu.signedAddition("000100101","000110001",8));
-        assertEquals("0101010110",alu.signedAddition("100100101","100110001",8));
-        assertEquals("00000110000100",alu.signedAddition("0001100001001","1000100100101",12));
+        //assertEquals("0001010110",alu.signedAddition("000100101","000110001",8));
+        // assertEquals("0101010110",alu.signedAddition("100100101","100110001",8));
+        // assertEquals("00000110000100",alu.signedAddition("0001100001001","1000100100101",12));
+        assertEquals("010010",alu.signedAddition("00100","10110",4));
+      //  assertEquals("00010",alu.signedAddition("1100","0110",4));
+
     }
 
     @Test
     public void floatAddition() throws Exception {
+        assertEquals("11000101000100011100100011100001",alu.floatAddition("01000001010001110001111010111000","11000101000100101001000000000000",8,23,4));
+
+
         assertEquals("00111111100000000000000000001000",alu.floatAddition("00111111100000000000000000000111","00111111100000000000000000000001",8,23,4));
+        assertEquals("00111111100000000000000000000001",alu.floatAddition("00000001100000000000000000000111","00111111100000000000000000000001",8,23,4));
+        assertEquals("01000101011111000110010110011010",alu.floatAddition("01000101011110100000010110011010","01000010000110000000000000000000",8,23,4));
+        //assertEquals("01000111111100010001100010011110",alu.floatAddition("01000111111100000101000010000000","01000011110010000001110110010001",8,23,4));
 
     }
 

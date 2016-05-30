@@ -611,7 +611,8 @@ public class ALU {
 	 * @param length 存放操作数的寄存器的长度，为4的倍数。length不小于操作数的长度，当某个操作数的长度小于length时，需要在高位补符号位
 	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相减结果
 	 */
-	public String integerSubtraction (String operand1, String operand2, int length) {
+	public String
+	integerSubtraction (String operand1, String operand2, int length) {
 
 		return integerAddition(operand1,toOpposite(operand2),length);
 	}
@@ -690,7 +691,6 @@ public class ALU {
 	 * @return 长度为2*length+1的字符串表示的相除结果，其中第1位指示是否溢出（溢出为1，否则为0），其后length位为商，最后length位为余数
 	 */
 	public String integerDivision (String operand1, String operand2, int length) {
-		System.out.println("-----------------------------我是分割线---------------------------------------");
 
 		assert length%4==0;
 		assert length>=operand1.length();
@@ -732,25 +732,19 @@ public class ALU {
 			quotient=result.substring(length);
 			if (divisor.charAt(0) == remainer.charAt(0)) {
 				remainer=integerSubtraction(remainer,divisor,length).substring(1);
-				System.out.println("减去被除数"+divisor);
 			} else {
 				remainer=integerAddition(remainer,divisor,length).substring(1);
-				System.out.println("加上被除数"+divisor);
 			}
 			result=remainer+quotient;
-			System.out.println(result);
 
 
 
 			if (divisor.charAt(0) == remainer.charAt(0)) {
 				quotient=addOne(quotient);
-				System.out.println("左移补１");
 			}else {
 
-				System.out.println("左移补0");
 			}
 			result=remainer+quotient;
-			System.out.println(result);
 
 		}
 		if(remainer.charAt(0)!=fixOperand1.charAt(0)){
@@ -764,8 +758,6 @@ public class ALU {
 		result=quotient+remainer;
 
 		result="0"+result;
-		System.out.println("输出结果"+result);
-		System.out.println("-----------------------------我是分割线---------------------------------------");
 
 		return result;
 
@@ -782,6 +774,59 @@ public class ALU {
 	 * @return 长度为length+2的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），第2位为符号位，后length位是相加结果
 	 */
 	public String signedAddition (String operand1, String operand2, int length) {
+		boolean o1Positive=true;
+		boolean o2Positive=true;
+		boolean resultPositive=true;
+		String o1Value;
+		String o2Value;
+		if (operand1.charAt(0) == '0') {
+			o1Positive=true;
+		} else {
+			o1Positive=false;
+		}
+
+		if (operand2.charAt(0) == '0') {
+			o2Positive=true;
+		} else {
+			o2Positive=false;
+		}
+		o1Value=operand1.substring(1);
+		o2Value=operand2.substring(1);
+		String value;
+		String result;
+		String overflow;
+		String sign="0";
+		if(o1Positive&&o2Positive){
+			value=integerAddition(o1Value,o2Value,(int)Math.ceil((double)length/4)*4).substring(1);
+			overflow=integerAddition(o1Value,o2Value,(int)Math.ceil(length/4)*4).substring(0,1);
+			return overflow+"0"+value;
+		} else if((!o1Positive)&&(!o2Positive)){
+			value=integerAddition(o1Value,o2Value,(int)Math.ceil((double)length/4)*4).substring(1);
+			overflow=integerAddition(o1Value,o2Value,(int)Math.ceil(length/4)*4).substring(0,1);
+			return overflow+"1"+value;
+		} else if ((!o1Positive) && o2Positive) {
+			value=integerSubtraction(o2Value,o1Value,(int)Math.ceil((double)length/4)*4).substring(1);
+			overflow=integerSubtraction(o2Value,o1Value,(int)Math.ceil((double)length/4)*4).substring(0,1);
+			if(value.charAt(0)=='1'){
+				value=toOpposite(value);
+				sign="1";
+			}
+			return overflow+sign+value;
+
+		} else if ((o1Positive) && (!o2Positive)) {
+			value=integerSubtraction(o1Value,o2Value,(int)Math.ceil((double)length/4)*4).substring(1);
+			overflow=integerSubtraction(o1Value,o2Value,(int)Math.ceil((double)length/4)*4).substring(0,1);
+			if(value.charAt(0)=='1'){
+				value=toOpposite(value);
+				sign="1";
+			}
+			return overflow+sign+value;
+		}
+
+
+		return null;
+	}
+	public String NBCDsignedAddition (String operand1, String operand2, int length) {
 		assert  length%4==0;
 		int caNum=length/4;
 		String[] binOf ={"0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"};
@@ -1029,21 +1074,34 @@ public class ALU {
 		} else if(operand2.equals(postiveZero)||operand2.equals(negativeZero)){
 			return  "0"+operand1;
 		} else{
+			boolean firstShift=true;
 			if(!exponent1.equals(exponent2)){
 				if(exponentValue1>exponentValue2){
 					while (exponentValue1!=exponentValue2){
 						exponentValue2++;
-						fragtion2=ariRightShift(fragtion2,1);
+						fragtion2=logRightShift(fragtion2,1);
+						if(firstShift){
+							fragtion2="1"+fragtion2.substring(1);
+							firstShift=false;
+						}
 						if (fragtion2.equals(postiveZero.substring(1+eLength,1+eLength+sLength))){
 							return "0"+operand1;
 						}
 					}
 				} else {
 					while (exponentValue1!=exponentValue2){
+						/**/
+						System.out.println("指数统一,右移并加指数，此时指数为"+exponentValue1);
+
 						exponentValue1++;
-						fragtion1=ariRightShift(fragtion1,1);
+						fragtion1=logRightShift(fragtion1,1);
+						if(firstShift){
+							fragtion1="1"+fragtion1.substring(1);
+							firstShift=false;
+						}
+
 						if (fragtion1.equals(postiveZero.substring(1+eLength,1+eLength+sLength))){
-							return "0"+operand2;
+							return "0"+operand2.substring(1);
 						}
 					}
 				}
@@ -1056,7 +1114,8 @@ public class ALU {
 			}else {
 				length=(sLength/4+1)*4;
 			}
-			resultFragtion=signedAddition(sign1+fragtion1,sign2+fragtion2,length).substring(2);
+			String temp=signedAddition(sign1+fragtion1,sign2+fragtion2,length);
+			resultFragtion=temp.substring(temp.length()-sLength,temp.length());
 			sign=signedAddition(sign1+fragtion1,sign2+fragtion2,length).charAt(1);
 			overFlow=signedAddition(sign1+fragtion1,sign2+fragtion2,length).charAt(0);
 			if (overFlow == '1') {
@@ -1073,7 +1132,8 @@ public class ALU {
 
 			}
 
-			while (resultFragtion.charAt(0) == '0') {
+		/*	while (resultFragtion.charAt(0) == '0') {
+				System.out.println("规格化,左移并减指数，此时指数为"+exponentValue1);
 				resultFragtion=leftShift(resultFragtion,1);
 				exponentValue1--;
 				if (exponentValue1 < 0) {
@@ -1082,7 +1142,7 @@ public class ALU {
 				if(exponentValue1==0){
 					resultFragtion=ariRightShift(resultFragtion,1);
 				}
-			}
+			}*/
 
 
 
@@ -1094,6 +1154,9 @@ public class ALU {
 
 		}
 		String resultExponent=integerReprsentation(String.valueOf("0"+exponentValue1),eLength);
+		System.out.println(sign);
+		System.out.println(resultExponent);
+		System.out.println(resultFragtion);
 		String result=String.valueOf(sign)+resultExponent+resultFragtion;
 
 
