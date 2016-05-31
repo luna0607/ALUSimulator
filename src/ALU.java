@@ -1444,7 +1444,7 @@ public class ALU {
 		StringBuilder protect1StringBuilder=new StringBuilder();
 		StringBuilder protect2StringBuilder=new StringBuilder();
 		String resultFragtion;
-		char overFlow;
+		String overFlow;
 		int exponentMaxValue=(int)Math.pow(2,(int)eLength)-1;
 		String result1;
 		String result2;
@@ -1541,7 +1541,8 @@ public class ALU {
 		mutiOperand1="01"+fragtion1;
 		mutiOperand2="01"+fragtion2;
 		int operandLength=(int)Math.ceil((mutiOperand1.length())/4)*4+4;
-		String mutiplyResult=integerDivision(mutiOperand1,mutiOperand2,operandLength);
+		String mutiplyResult=integerDivision(mutiOperand1,mutiOperand2,operandLength*2);
+
 		//mutiplyResult=integerMultiplication("0"+fragtion1,"0"+fragtion2,(4*(int)(Math.ceil(mutiOperand1.length()/4))));
 		int mutiplyResultLength=mutiplyResult.length();
 		int startIndex=mutiplyResult.length()-2*sLength;
