@@ -124,10 +124,10 @@ public class ALUTest  {
 
     @Test
     public void integerMultiplication() throws Exception {
-        assertEquals("000010101",alu.integerMultiplication("0111","0011",4));
-        assertEquals("000010101",alu.integerMultiplication("1101","1001",4));
-        assertEquals("011101011",alu.integerMultiplication("0111","1101",4));
-        assertEquals("011101011",alu.integerMultiplication("0111","1101",4));
+        assertEquals("000010101",alu.integerMultiplication("0111","0011",8));
+        assertEquals("000010101",alu.integerMultiplication("1101","1001",8));
+        assertEquals("011101011",alu.integerMultiplication("0111","1101",8));
+        assertEquals("011101011",alu.integerMultiplication("0111","1101",8));
     }
 
     @Test
@@ -155,12 +155,12 @@ public class ALUTest  {
 
     @Test
     public void floatAddition() throws Exception {
-        assertEquals("11000101000100011100100011100001",alu.floatAddition("01000001010001110001111010111000","11000101000100101001000000000000",8,23,4));
 
 
         assertEquals("00111111100000000000000000001000",alu.floatAddition("00111111100000000000000000000111","00111111100000000000000000000001",8,23,4));
         assertEquals("00111111100000000000000000000001",alu.floatAddition("00000001100000000000000000000111","00111111100000000000000000000001",8,23,4));
         assertEquals("01000101011111000110010110011010",alu.floatAddition("01000101011110100000010110011010","01000010000110000000000000000000",8,23,4));
+//        assertEquals("11000101000100011100100011100001",alu.floatAddition("01000001010001110001111010111000","11000101000100101001000000000000",8,23,4));
         //assertEquals("01000111111100010001100010011110",alu.floatAddition("01000111111100000101000010000000","01000011110010000001110110010001",8,23,4));
 
     }
@@ -172,6 +172,7 @@ public class ALUTest  {
 
     @Test
     public void floatMultiplication() throws Exception {
+        assertEquals("01000100000010111000100011011000",alu.floatMultiplication("01000010111101101100110011001101","01000000100100001011110001101010",8,23));
 
     }
 
