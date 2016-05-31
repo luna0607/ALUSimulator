@@ -1,3 +1,4 @@
+import javax.print.attribute.standard.MediaSize;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -548,10 +549,10 @@ public class ALU {
 		StringBuilder stringBuilderO2=new StringBuilder(operand2);
 
 		int maxLength=Math.max((int)Math.ceil(stringBuilderO1.length()/4)*4,(int)Math.ceil(stringBuilderO2.length()/4)*4);
-		while (stringBuilderO1.length()!=maxLength){
+		while (stringBuilderO1.length()!=length){
 			stringBuilderO1.insert(0,stringBuilderO1.charAt(0));
 		}
-		while (stringBuilderO2.length()!=maxLength){
+		while (stringBuilderO2.length()!=length){
 			stringBuilderO2.insert(0,stringBuilderO2.charAt(0));
 		}
 
@@ -1273,6 +1274,161 @@ public class ALU {
 
 		exponentStringBuilder.delete(0,exponentStringBuilder.length());
 		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
+		String overflow="0";
+		char sign;
+		String exponent1;
+		String exponent2;
+		String sign1;
+		String sign2;
+		int exponentValue1;
+		int exponentValue2;
+		String fragtion1;
+		String fragtion2;
+		String protect1;
+		String protect2;
+		StringBuilder protect1StringBuilder=new StringBuilder();
+		StringBuilder protect2StringBuilder=new StringBuilder();
+		String resultFragtion;
+		char overFlow;
+		int exponentMaxValue=(int)Math.pow(2,(int)eLength)-1;
+		String result1;
+		String result2;
+		boolean o1Positive;
+		boolean o2Positive;
+		if(operand1.charAt(0)=='0'){
+			o1Positive=true;
+		} else {
+			o1Positive=false;
+		}
+
+		if(operand2.charAt(0)=='0'){
+			o2Positive=true;
+		} else {
+			o2Positive=false;
+		}
+		exponent1=operand1.substring(1,1+eLength);
+		exponent2=operand2.substring(1,1+eLength);
+		fragtion1=operand1.substring(1+eLength,1+eLength+sLength);
+		fragtion2=operand2.substring(1+eLength,1+eLength+sLength);
+		exponentValue1=Integer.valueOf(integerTrueValue("0"+exponent1));
+		exponentValue2=Integer.valueOf(integerTrueValue("0"+exponent2));
+		sign1=operand1.substring(0,1);
+		sign2=operand2.substring(0,1);
+
+
+		if (operand1.equals(positiveInfinite)) {
+			if (operand2.equals(negativeInfinite)) {
+				return  "0"+negativeInfinite;
+			}
+			if (operand2.equals(positiveInfinite)) {
+				return  "0"+positiveInfinite;
+			}
+			if (operand2.equals(postiveZero)) {
+				return  "0"+NaN;
+
+			}
+		}
+
+		if (operand2.equals(positiveInfinite)) {
+			if (operand1.equals(negativeInfinite)) {
+				return negativeInfinite;
+			}
+			if (operand1.equals(positiveInfinite)) {
+				return "0"+positiveInfinite;
+			}
+			if (operand1.equals(postiveZero)) {
+				return "0"+NaN;
+
+			}
+		}
+		if(operand1.equals(postiveZero)||operand1.equals(negativeZero)){
+			return "0"+postiveZero;
+		} else if(operand2.equals(postiveZero)||operand2.equals(negativeZero)){
+			return "0"+postiveZero;
+		}
+		int exponentSum=exponentValue1+exponentValue2-(int)(Math.pow(2,eLength-1)-1);
+		if (exponentSum >= exponentMaxValue) {
+			if ((o1Positive&&o2Positive)||((!o1Positive)&&(!o2Positive))) {
+				return "1"+positiveInfinite;
+			} else {
+				return "1"+negativeInfinite;
+			}
+		}
+		if(exponentSum<=0){
+			return postiveZero;
+		}
+		String mutiOperand1;
+		String mutiOperand2;
+		mutiOperand1="01"+fragtion1;
+		mutiOperand2="01"+fragtion2;
+		int operandLength=(int)Math.ceil((mutiOperand1.length())/4)*4+4;
+		String mutiplyResult=integerMultiplication(mutiOperand1,mutiOperand2,2*operandLength);
+		//mutiplyResult=integerMultiplication("0"+fragtion1,"0"+fragtion2,(4*(int)(Math.ceil(mutiOperand1.length()/4))));
+		int mutiplyResultLength=mutiplyResult.length();
+		int startIndex=mutiplyResult.length()-2*sLength;
+		int endIndex=mutiplyResult.length()-sLength;
+		String exponentResult=integerReprsentation(String.valueOf(exponentSum),eLength);
+		if(mutiplyResult.charAt(startIndex-2)=='1'){
+			exponentValue1++;
+			resultFragtion=mutiplyResult.substring(startIndex-1,endIndex-1);
+		} else {
+			resultFragtion=mutiplyResult.substring(startIndex,endIndex);
+
+		}
+		if (o1Positive && o2Positive) {
+			sign='0';
+
+		} else if ((!o1Positive) && (!o2Positive)) {
+			sign='0';
+		} else {
+			sign= '1';
+		}
+
+		return "0"+String.valueOf(sign)+exponentResult+resultFragtion;
+	}
+	
+	/**
+	 * 浮点数除法，可调用{@link #integerAddition(String, String, char, int) integerAddition}等方法实现。<br/>
+	 * 例：floatDivision("00111110111000000", "00111111000000000", 8, 8)
+	 * @param operand1 二进制表示的被除数
+	 * @param operand2 二进制表示的除数
+	 * @param eLength 指数的长度，取值大于等于 4
+	 * @param sLength 尾数的长度，取值大于等于 4
+	 * @return 长度为2+eLength+sLength的字符串表示的相乘结果,其中第1位指示是否指数上溢（溢出为1，否则为0），其余位从左到右依次为符号、指数（移码表示）、尾数（首位隐藏）。舍入策略为向0舍入
+	 */
+	public String floatDivision (String operand1, String operand2, int eLength, int sLength) {
+		double maxValue=(2-Math.pow(2,-sLength))*Math.pow(2,Math.pow(2,eLength-1)-1);
+		double minRegValue=Math.pow(2,(-Math.pow(2,eLength-1)+2));
+		double minValue=minRegValue*Math.pow(2,-sLength);
+		StringBuilder exponentStringBuilder=new StringBuilder();
+		StringBuilder fragtionStringBuilder=new StringBuilder();
+
+		/*构造0*/
+		for (int i = 0; i < eLength; i++) {
+			exponentStringBuilder.append("0");
+		}
+		for (int i = 0; i < sLength; i++) {
+			fragtionStringBuilder.append("0");
+		}
+		String postiveZero="0"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		String negativeZero="1"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		exponentStringBuilder.delete(0,exponentStringBuilder.length());
+		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
+
+
+		/*构造无穷大*/
+		for (int i = 0; i < eLength; i++) {
+			exponentStringBuilder.append("1");
+		}
+		for (int i = 0; i < sLength; i++) {
+			fragtionStringBuilder.append("0");
+		}
+		String positiveInfinite="0"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		String negativeInfinite="1"+exponentStringBuilder.toString()+fragtionStringBuilder.toString();
+		String NaN="0"+exponentStringBuilder.toString()+"0"+fragtionStringBuilder.substring(1);
+
+		exponentStringBuilder.delete(0,exponentStringBuilder.length());
+		fragtionStringBuilder.delete(0,fragtionStringBuilder.length());
 
 		char sign;
 		String exponent1;
@@ -1317,6 +1473,31 @@ public class ALU {
 
 		if (operand1.equals(positiveInfinite)) {
 			if (operand2.equals(negativeInfinite)) {
+				return NaN;
+			}
+			if (operand2.equals(positiveInfinite)) {
+				return NaN;
+			}
+			if (operand2.equals(postiveZero)) {
+				return positiveInfinite;
+
+			}
+
+		}
+		if (operand1.equals(negativeInfinite)) {
+			if (operand2.equals(negativeInfinite)) {
+				return NaN;
+			}
+			if (operand2.equals(positiveInfinite)) {
+				return NaN;
+			}
+			if (operand2.equals(postiveZero)) {
+				return negativeInfinite;
+
+			}
+		}
+		if (operand1.equals(positiveInfinite)) {
+			if (operand2.equals(negativeInfinite)) {
 				return negativeInfinite;
 			}
 			if (operand2.equals(positiveInfinite)) {
@@ -1327,25 +1508,24 @@ public class ALU {
 
 			}
 		}
-
-		if (operand2.equals(positiveInfinite)) {
+		if (operand2.equals(negativeInfinite)) {
 			if (operand1.equals(negativeInfinite)) {
-				return negativeInfinite;
+				return NaN;
 			}
 			if (operand1.equals(positiveInfinite)) {
-				return positiveInfinite;
+				return NaN;
 			}
 			if (operand1.equals(postiveZero)) {
-				return NaN;
+				return negativeInfinite;
 
 			}
 		}
 		if(operand1.equals(postiveZero)||operand1.equals(negativeZero)){
-			return postiveZero;
+			return NaN;
 		} else if(operand2.equals(postiveZero)||operand2.equals(negativeZero)){
-			return postiveZero;
+			return NaN;
 		}
-		int exponentSum=exponentValue1+exponentValue2-(int)(Math.pow(2,eLength-1)-1);
+		int exponentSum=exponentValue1-exponentValue2+(int)(Math.pow(2,eLength-1)-1);
 		if (exponentSum >= exponentMaxValue) {
 			if ((o1Positive&&o2Positive)||((!o1Positive)&&(!o2Positive))) {
 				return positiveInfinite;
@@ -1356,22 +1536,27 @@ public class ALU {
 		if(exponentSum<=0){
 			return postiveZero;
 		}
-	/*	String mutiOperand1;
+		String mutiOperand1;
 		String mutiOperand2;
 		mutiOperand1="01"+fragtion1;
 		mutiOperand2="01"+fragtion2;
-		int operandLength=(int)Math.ceil((mutiOperand1.length())/4)*4;
-		String mutiplyResult=integerMultiplication(mutiOperand1,mutiOperand2,2*operandLength);
-		int firstIndexOfOne=mutiplyResult.indexOf('1');
-		int resultLength=mutiplyResult.substring(firstIndexOfOne).length();
-		if (resultLength == 2 * sLength + 2) {
-			exponentSum++;
-		}
-		resultFragtion=mutiplyResult.substring(firstIndexOfOne+1,firstIndexOfOne+1+sLength);
-		String result=mutiplyResult.substring(firstIndexOfOne+1,firstIndexOfOne+1+sLength);*/
+		int operandLength=(int)Math.ceil((mutiOperand1.length())/4)*4+4;
+		String mutiplyResult=integerDivision(mutiOperand1,mutiOperand2,operandLength);
+		//mutiplyResult=integerMultiplication("0"+fragtion1,"0"+fragtion2,(4*(int)(Math.ceil(mutiOperand1.length()/4))));
+		int mutiplyResultLength=mutiplyResult.length();
+		int startIndex=mutiplyResult.length()-2*sLength;
+		int endIndex=mutiplyResult.length()-sLength;
 		String exponentResult=integerReprsentation(String.valueOf(exponentSum),eLength);
+		if(mutiplyResult.charAt(startIndex-2)=='1'){
+			exponentValue1++;
+			resultFragtion=mutiplyResult.substring(startIndex-1,endIndex-1);
+		} else {
+			resultFragtion=mutiplyResult.substring(startIndex,endIndex);
+
+		}
 		if (o1Positive && o2Positive) {
 			sign='0';
+
 		} else if ((!o1Positive) && (!o2Positive)) {
 			sign='0';
 		} else {
@@ -1379,20 +1564,6 @@ public class ALU {
 		}
 
 		return String.valueOf(sign)+exponentResult+resultFragtion;
-	}
-	
-	/**
-	 * 浮点数除法，可调用{@link #integerAddition(String, String, char, int) integerAddition}等方法实现。<br/>
-	 * 例：floatDivision("00111110111000000", "00111111000000000", 8, 8)
-	 * @param operand1 二进制表示的被除数
-	 * @param operand2 二进制表示的除数
-	 * @param eLength 指数的长度，取值大于等于 4
-	 * @param sLength 尾数的长度，取值大于等于 4
-	 * @return 长度为2+eLength+sLength的字符串表示的相乘结果,其中第1位指示是否指数上溢（溢出为1，否则为0），其余位从左到右依次为符号、指数（移码表示）、尾数（首位隐藏）。舍入策略为向0舍入
-	 */
-	public String floatDivision (String operand1, String operand2, int eLength, int sLength) {
-		// TODO YOUR CODE HERE.
-		return null;
 	}
 
 
