@@ -1356,7 +1356,7 @@ public class ALU {
 		if(exponentSum<=0){
 			return postiveZero;
 		}
-		String mutiOperand1;
+	/*	String mutiOperand1;
 		String mutiOperand2;
 		mutiOperand1="01"+fragtion1;
 		mutiOperand2="01"+fragtion2;
@@ -1368,7 +1368,7 @@ public class ALU {
 			exponentSum++;
 		}
 		resultFragtion=mutiplyResult.substring(firstIndexOfOne+1,firstIndexOfOne+1+sLength);
-		String result=mutiplyResult.substring(firstIndexOfOne+1,firstIndexOfOne+1+sLength);
+		String result=mutiplyResult.substring(firstIndexOfOne+1,firstIndexOfOne+1+sLength);*/
 		String exponentResult=integerReprsentation(String.valueOf(exponentSum),eLength);
 		if (o1Positive && o2Positive) {
 			sign='0';
