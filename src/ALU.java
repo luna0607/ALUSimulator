@@ -1541,20 +1541,25 @@ public class ALU {
 		mutiOperand1="01"+fragtion1;
 		mutiOperand2="01"+fragtion2;
 		int operandLength=(int)Math.ceil((mutiOperand1.length())/4)*4+4;
-		String mutiplyResult=integerDivision(mutiOperand1,mutiOperand2,operandLength*2);
 
-		//mutiplyResult=integerMultiplication("0"+fragtion1,"0"+fragtion2,(4*(int)(Math.ceil(mutiOperand1.length()/4))));
-		int mutiplyResultLength=mutiplyResult.length();
-		int startIndex=mutiplyResult.length()-2*sLength;
-		int endIndex=mutiplyResult.length()-sLength;
-		String exponentResult=integerReprsentation(String.valueOf(exponentSum),eLength);
-		if(mutiplyResult.charAt(startIndex-2)=='1'){
-			exponentValue1++;
-			resultFragtion=mutiplyResult.substring(startIndex-1,endIndex-1);
-		} else {
-			resultFragtion=mutiplyResult.substring(startIndex,endIndex);
+		String divisionResult=integerDivision(mutiOperand1,mutiOperand2,operandLength*2).substring(1,1+operandLength);
+		for (int i = 0;divisionResult.charAt(i)==0; i++) {
 
 		}
+		String exponentResult=integerReprsentation(String.valueOf(exponentSum),eLength);
+
+		//mutiplyResult=integerMultiplication("0"+fragtion1,"0"+fragtion2,(4*(int)(Math.ceil(mutiOperand1.length()/4))));
+		/*int mutiplyResultLength=divisionResult.length();
+		int startIndex=divisionResult.length()-2*sLength;
+		int endIndex=divisionResult.length()-sLength;
+		if(divisionResult.charAt(startIndex-2)=='1'){
+			exponentValue1++;
+			resultFragtion=divisionResult.substring(startIndex-1,endIndex-1);
+		} else {
+			resultFragtion=divisionResult.substring(startIndex,endIndex);
+		}*/
+
+
 		if (o1Positive && o2Positive) {
 			sign='0';
 
